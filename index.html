@@ -42,81 +42,25 @@
         .input-group {
             margin-bottom: 10px;
         }
-        /* Stili per il form di login */
-        #loginForm {
-            display: none;
-            max-width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        #loginForm input {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-            box-sizing: border-box;
-        }
     </style>
 </head>
 <body>
 
     <h1>Registro Elettronico Docenti</h1>
 
-    <!-- Form di Login -->
-    <div id="loginForm">
-        <h2>Accesso Docenti</h2>
-        <div class="input-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" placeholder="Inserisci username">
-        </div>
-        <div class="input-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Inserisci password">
-        </div>
-        <button class="btn" onclick="login()">Accedi</button>
-        <p id="loginError" style="color: red; display: none;">Credenziali non valide!</p>
+    <!-- Sezione per aggiungere una nuova classe -->
+    <h2>Aggiungi Classe</h2>
+    <div class="input-group">
+        <label for="className">Nome Classe: </label>
+        <input type="text" id="className" placeholder="Es. 1A, 2B">
+        <button class="btn" onclick="addClass()">Aggiungi Classe</button>
     </div>
 
-    <!-- Sezione principale del registro (nascosta finché non si effettua il login) -->
-    <div id="registroContent" style="display: none;">
-        <!-- Aggiungi le sezioni per la gestione delle classi qui sotto -->
-        <h2>Aggiungi Classe</h2>
-        <div class="input-group">
-            <label for="className">Nome Classe: </label>
-            <input type="text" id="className" placeholder="Es. 1A, 2B">
-            <button class="btn" onclick="addClass()">Aggiungi Classe</button>
-        </div>
-
-        <!-- Sezione per visualizzare le classi -->
-        <h2>Elenco Classi</h2>
-        <div id="classList"></div>
-    </div>
+    <!-- Sezione per visualizzare le classi -->
+    <h2>Elenco Classi</h2>
+    <div id="classList"></div>
 
     <script>
-        // Credenziali fisse per esempio
-        const validUsername = "docente";
-        const validPassword = "password123";
-
-        // Funzione di login
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const loginError = document.getElementById("loginError");
-
-            if (username === validUsername && password === validPassword) {
-                // Login riuscito
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("registroContent").style.display = "block";
-            } else {
-                // Mostra errore se le credenziali non sono valide
-                loginError.style.display = "block";
-            }
-        }
-
-        // Gestione delle classi (come nel codice precedente)
         let classes = [];
 
         function addClass() {
