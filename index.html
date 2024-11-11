@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Elettronico Docenti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        /* Stili per il form di login */
+        #loginForm {
+            display: none;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #loginForm input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Registro Elettronico Docenti</h1>
+
+    <!-- Form di Login -->
+    <div id="loginForm">
+        <h2>Accesso Docenti</h2>
+        <div class="input-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Inserisci username">
+        </div>
+        <div class="input-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Inserisci password">
+        </div>
+        <button class="btn" onclick="login()">Accedi</button>
+        <p id="loginError" style="color: red; display: none;">Credenziali non valide!</p>
+    </div>
+
+    <!-- Sezione principale del registro (nascosta finché non si effettua il login) -->
+    <div id="registroContent" style="display: none;">
+        <!-- Aggiungi le sezioni per la gestione delle classi qui sotto -->
+        <h2>Aggiungi Classe</h2>
+        <div class="input-group">
+            <label for="className">Nome Classe: </label>
+            <input type="text" id="className" placeholder="Es. 1A, 2B">
+            <button class="btn" onclick="addClass()">Aggiungi Classe</button>
+        </div>
+
+        <!-- Sezione per visualizzare le classi -->
+        <h2>Elenco Classi</h2>
+        <div id="classList"></div>
+    </div>
+
+    <script>
+        // Credenziali fisse per esempio
+        const validUsername = "docente";
+        const validPassword = "password123";
+
+        // Funzione di login
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const loginError = document.getElementById("loginError");
+
+            if (username === validUsername && password === validPassword) {
+                // Login riuscito
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("registroContent").style.display = "block";
+            } else {
+                // Mostra errore se le credenziali non sono valide
+                loginError.style.display = "block";
+            }
+        }
+
+        // Gestione delle classi (come nel codice precedente)
+        let classes = [];
+
+        function addClass() {
+            const className = document.getElementById('className').value;
+            if (className) {
+                classes.push({
+                    name: className,
+                    lessons: [],
+                    absences: [],
+                    notes: []
+                });
+                document.getElementById('className').value = ''; // Pulisci input
+                renderClassList();
+            } else {
+                alert('Inserisci il nome della classe.');
+            }
+        }
+
+        function renderClassList() {
+            const classListDiv = document.getElementById('classList');
+            classListDiv.innerHTML = ''; // Svuota la lista
+
+            classes.forEach((classItem, index) => {
+                const classDiv = document.createElement('div');
+                classDiv.innerHTML = `
+                    <h3>Classe: ${classItem.name}</h3>
+                    <button class="btn" onclick="addLesson(${index})">Aggiungi Lezione</button>
+                    <button class="btn" onclick="addAssignment(${index})">Aggiungi Compito</button>
+                    <button class="btn" onclick="addAbsence(${index})">Aggiungi Assenza</button>
+                    <button class="btn" onclick="addNote(${index})">Aggiungi Nota</button>
+                    <div>
+                        <h4>Lezioni:</h4>
+                        <ul id="lessons-${index}">
+                            ${classItem.lessons.map(lesson => `<li>${lesson}</li>`).join('')}
+                        </ul>
+                        <h4>Compiti:</h4>
+                        <ul id="assignments-${index}">
+                            ${classItem.assignments ? classItem.assignments.map(assignment => `<li>${assignment}</li>`).join('') : ''}
+                        </ul>
+                        <h4>Assenze:</h4>
+                        <ul id="absences-${index}">
+                            ${classItem.absences.map(absence => `<li>${absence}</li>`).join('')}
+                        </ul>
+                        <h4>Note:</h4>
+                        <ul id="notes-${index}">
+                            ${classItem.notes.map(note => `<li>${note}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                classListDiv.appendChild(classDiv);
+            });
+        }
+
+        function addLesson(index) {
+            const lesson = prompt("Inserisci l'argomento della lezione:");
+            if (lesson) {
+                classes[index].lessons.push(lesson);
+                renderClassList();
+            }
+        }
+
+        function addAssignment(index) {
+            const assignment = prompt("Inserisci il compito:");
+            if (assignment) {
+                if (!classes[index].assignments) classes[index].assignments = [];
+                classes[index].assignments.push(assignment);
+                renderClassList();
+            }
+        }
+
+        function addAbsence(index) {
+            const absence = prompt("Inserisci il nome dello studente assente:");
+            if (absence) {
+                classes[index].absences.push(absence);
+                renderClassList();
+            }
+        }
+
+        function addNote(index) {
+            const note = prompt("Inserisci la nota:");
+            if (note) {
+                classes[index].notes.push(note);
+                renderClassList();
+            }
+        }
+    </script>
+
+</body>
+</html>
