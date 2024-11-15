@@ -1,105 +1,259 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Elettronico Docenti</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        .btn {
-            padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
-        #loginForm, #registroContent {
-            max-width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        #loginForm input {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-        }
-        #registroContent ul {
-            list-style-type: none;
-            padding: 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Elettronico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #ffe6e6;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: #b30000;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px 0;
+    }
+
+    .btn:hover {
+      background-color: #ff3333;
+    }
+
+    #loginForm,
+    #classListContent,
+    .class-page {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ff6666;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    #classListContent ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .class-container {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #ff6666;
+      border-radius: 5px;
+      background-color: #ffcccc;
+    }
+
+    .agenda {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      background-color: #ffebeb;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .agenda-item {
+      flex: 1;
+      padding: 5px;
+    }
+
+    .agenda-item .date {
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
 
-    <h1>Registro Elettronico Docenti</h1>
+  <h1>Registro Elettronico Docenti</h1>
 
-    <!-- Form di Login -->
-    <div id="loginForm">
-        <h2>Accesso Docenti</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Inserisci username">
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Inserisci password">
-        <button class="btn" onclick="login()">Accedi</button>
-        <p id="loginError" style="color: red; display: none;">Credenziali non valide!</p>
-    </div>
+  <!-- Form di Login -->
+  <div id="loginForm">
+    <h2>Accesso Docenti</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username" placeholder="Inserisci username">
+    <label for="password">Password:</label>
+    <input type="password" id="password" placeholder="Inserisci password">
+    <button class="btn" onclick="login()">Accedi</button>
+    <p id="loginError" style="color: red; display: none;">Credenziali non valide!</p>
+  </div>
 
-    <!-- Sezione principale del registro -->
-    <div id="registroContent">
-        <h2>Registro delle Classi</h2>
-        <button class="btn" onclick="addClass()">Aggiungi Classe</button>
-        <ul id="classList"></ul>
-    </div>
+  <!-- Lista delle Classi -->
+  <div id="classListContent">
+    <h2>Gestione Classi</h2>
+    <button class="btn" onclick="addClass()">Aggiungi Classe</button>
+    <ul id="classList"></ul>
+  </div>
 
-    <script>
-        // Credenziali di accesso (esempio)
-        const validUsername = "docente";
-        const validPassword = "password123";
+  <!-- Dettagli della Classe -->
+  <div id="classPage" class="class-page">
+    <button class="btn" onclick="backToClassList()">Torna alla Lista Classi</button>
+    <h3 id="classTitle"></h3>
+    <button class="btn" onclick="addAgendaItem()">Aggiungi Argomento/Compito</button>
+    <ul id="agendaList"></ul>
+    <button class="btn" onclick="deleteClass()">Elimina Classe</button>
+  </div>
 
-        // Mostra il form di login all'avvio
-        document.getElementById('loginForm').style.display = 'block';
-
-        // Funzione di login
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const loginError = document.getElementById("loginError");
-
-            if (username === validUsername && password === validPassword) {
-                document.getElementById("loginForm").style.display = "none";
-                document.getElementById("registroContent").style.display = "block";
-            } else {
-                loginError.style.display = "block";
-            }
-        }
-
-        // Funzione per aggiungere classi
-        function addClass() {
-            const className = prompt("Inserisci il nome della classe:");
-            if (className) {
-                const classList = document.getElementById("classList");
-                const newClass = document.createElement("li");
-                newClass.textContent = className;
-                classList.appendChild(newClass);
-            }
-        }
-    </script>
+  <script>
+    // Credenziali di login
+    const validUsers = {
+      "tommaso.morici": "TTmm24122010!"
+    };
+    // Carica i dati dal localStorage
+    let classes = JSON.parse(localStorage.getItem("classes")) || [];
+    // Mostra la schermata di login
+    document.getElementById('loginForm').style.display = 'block';
+    // Funzione di login
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const loginError = document.getElementById("loginError");
+      if (validUsers[username] === password) {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("classListContent").style.display = "block";
+        renderClassList();
+      } else {
+        loginError.style.display = "block";
+      }
+    }
+    // Funzione per aggiungere una nuova classe
+    function addClass() {
+      const className = prompt("Inserisci il nome della classe:");
+      if (className) {
+        const newClass = {
+          name: className,
+          agenda: [] // Lista vuota di argomenti/compiti
+        };
+        classes.push(newClass);
+        saveClasses();
+        renderClassList();
+      }
+    }
+    // Funzione per visualizzare la lista delle classi
+    function renderClassList() {
+      const classList = document.getElementById("classList");
+      classList.innerHTML = '';
+      classes.forEach((classItem, index) => {
+        const listItem = document.createElement("li");
+        listItem.className = "class-container";
+        listItem.innerHTML = `
+                    ${classItem.name} 
+                    <button class="btn" onclick="openClassPage(${index})">Apri</button>
+                    <button class="btn" onclick="editClass(${index})">Modifica</button>
+                    <button class="btn" onclick="deleteSingleClass(${index})">Elimina</button>
+                `;
+        classList.appendChild(listItem);
+      });
+    }
+    // Funzione per modificare una classe
+    function editClass(classIndex) {
+      const newClassName = prompt("Inserisci il nuovo nome della classe:", classes[classIndex].name);
+      if (newClassName) {
+        classes[classIndex].name = newClassName;
+        saveClasses();
+        renderClassList();
+      }
+    }
+    // Funzione per eliminare una singola classe
+    function deleteSingleClass(classIndex) {
+      if (confirm("Sei sicuro di voler eliminare questa classe?")) {
+        classes.splice(classIndex, 1);
+        saveClasses();
+        renderClassList();
+      }
+    }
+    // Funzione per salvare i dati nel localStorage
+    function saveClasses() {
+      localStorage.setItem("classes", JSON.stringify(classes));
+    }
+    // Funzione per aprire la pagina di una classe
+    function openClassPage(classIndex) {
+      const classData = classes[classIndex];
+      document.getElementById("classTitle").textContent = classData.name;
+      document.getElementById("classListContent").style.display = "none";
+      document.getElementById("classPage").style.display = "block";
+      renderAgenda(classIndex);
+    }
+    // Funzione per visualizzare l'agenda della classe
+    function renderAgenda(classIndex) {
+      const agendaList = document.getElementById("agendaList");
+      agendaList.innerHTML = '';
+      classes[classIndex].agenda.forEach((item, itemIndex) => {
+        const listItem = document.createElement("li");
+        listItem.className = "agenda";
+        listItem.innerHTML = `
+                    <span class="date">${item.date}</span>
+                    <span>Argomento: ${item.lesson}</span>
+                    <span>Compito: ${item.assignment}</span>
+                    <button class="btn" onclick="editAgendaItem(${classIndex}, ${itemIndex})">Modifica</button>
+                    <button class="btn" onclick="deleteAgendaItem(${classIndex}, ${itemIndex})">Elimina</button>
+                `;
+        agendaList.appendChild(listItem);
+      });
+    }
+    // Funzione per aggiungere un elemento all'agenda
+    function addAgendaItem() {
+      const classIndex = classes.findIndex(c => c.name === document.getElementById("classTitle").textContent);
+      const date = prompt("Inserisci la data (es. 15/11/2024):");
+      const lesson = prompt("Inserisci l'argomento della lezione:");
+      const assignment = prompt("Inserisci il compito:");
+      if (date && lesson && assignment) {
+        classes[classIndex].agenda.push({
+          date,
+          lesson,
+          assignment
+        });
+        saveClasses();
+        renderAgenda(classIndex);
+      }
+    }
+    // Funzione per modificare un elemento dell'agenda
+    function editAgendaItem(classIndex, itemIndex) {
+      const item = classes[classIndex].agenda[itemIndex];
+      const newDate = prompt("Modifica la data:", item.date);
+      const newLesson = prompt("Modifica l'argomento:", item.lesson);
+      const newAssignment = prompt("Modifica il compito:", item.assignment);
+      if (newDate && newLesson && newAssignment) {
+        classes[classIndex].agenda[itemIndex] = {
+          date: newDate,
+          lesson: newLesson,
+          assignment: newAssignment
+        };
+        saveClasses();
+        renderAgenda(classIndex);
+      }
+    }
+    // Funzione per eliminare un elemento dell'agenda
+    function deleteAgendaItem(classIndex, itemIndex) {
+      if (confirm("Sei sicuro di voler eliminare questo elemento?")) {
+        classes[classIndex].agenda.splice(itemIndex, 1);
+        saveClasses();
+        renderAgenda(classIndex);
+      }
+    }
+    // Funzione per tornare alla lista delle classi
+    function backToClassList() {
+      document.getElementById("classPage").style.display = "none";
+      document.getElementById("classListContent").style.display = "block";
+    }
+  </script>
 
 </body>
+
 </html>
